@@ -2,18 +2,21 @@ from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
 from tempfile import mkdtemp
 from cs50 import SQL
-from helpers import login_required
+from helpers import login_required, hashit
 import os
 from functools import wraps
 
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
 
 app = Flask(__name__)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_PERMANENTON_TYPE"] = "filesystem"
-app.secret_key = 'Thisissupposedtobesecret!'
-app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
+app.config['SECRET_KEY'] = # argh can't show this...I still need to program the random hex key
 # Session(app)
+
 
 db = SQL("sqlite:///users.db")
 
@@ -44,7 +47,7 @@ def register():
             return render_template("apology.html", message="Username already exists. Please choose a different username.")
 
         # If registration succeeds, add user to database
-        hashpass = request.form.get("password") # hash
+        hashpass = hashit(password=request.form.get("password"), key=app.secret_key) # hash
         db.execute("INSERT INTO users (name, username, password) VALUES (:name, :username, :password)", name=name, username=username, password=hashpass)
         return redirect("/")
 
@@ -65,7 +68,7 @@ def login():
         print(rows)
 
         # Ensure username exists and password is correct
-        enteredPass = request.form.get('password') # hash
+        enteredPass = hashit(password=request.form.get('password'), key=app.secret_key) # hash
         print(enteredPass == rows[0]['password'])
         if len(rows) != 1 or rows[0]['password'] != enteredPass:
             return render_template("apology.html", message="invalid username and/or password.")
@@ -75,3 +78,8 @@ def login():
 
         # Redirect user to home page
         return redirect("/")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return render_template("login.html")
