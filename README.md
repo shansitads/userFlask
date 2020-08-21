@@ -1,3 +1,3 @@
 # userFlask
 
-need to fix hash
+- [ ] need to fix password hashing
