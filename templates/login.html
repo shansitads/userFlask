@@ -1,0 +1,10 @@
+{% block body %}
+        <h1>Login</h1>
+
+        <form action="/login" method="post">
+            <input type="text" name="userid" id="userid" placeholder="Username or email ID" autocomplete=False><br>
+            <input type="text" name="password" id="password" placeholder="Password" autocomplete=False><br>
+            <input id="submit" type="submit">
+        </form>
+
+{% endblock %}
