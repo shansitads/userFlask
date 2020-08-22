@@ -3,7 +3,7 @@
 - [ ] need to fix password hashing
 - [ ] add css design library
 
-users.db file is not included
+users.db file is not included </br>
 It can be created by writing the following sqlite3 code:
 ```
 CREATE TABLE 'users' (
