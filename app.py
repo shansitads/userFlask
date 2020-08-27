@@ -15,7 +15,7 @@ app.config['SECRET_KEY'] = # argh can't show this...I still need to program the 
 # Session(app)
 
 
-db = SQL("sqlite:///users.db")
+db = SQL("sqlite:///database.db")
 
 @app.route("/", methods=["GET", "POST"])
 @login_required
