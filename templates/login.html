@@ -1,10 +1,25 @@
+{% extends "layout.html" %}
+
 {% block body %}
         <h1>Login</h1>
 
         <form action="/login" method="post">
-            <input type="text" name="userid" id="userid" placeholder="Username or email ID" autocomplete=False><br>
-            <input type="text" name="password" id="password" placeholder="Password" autocomplete=False><br>
+            <input type="text" name="userid" id="userid" placeholder="Username or email ID" autocomplete="off"><br>
+            <input type="password" name="password" id="password" placeholder="Password" autocomplete="off"><br>
+            <input type="checkbox" onclick="myFunction()">Show Password
             <input id="submit" type="submit">
+
+            <script>
+              function myFunction() {
+                var x = document.getElementById("password");
+                if (x.type === "password") {
+                  x.type = "text";
+                } else {
+                  x.type = "password";
+                }
+              }
+            </script>
+
         </form>
 
 {% endblock %}
