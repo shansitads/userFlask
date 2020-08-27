@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 from flask_session import Session
 from tempfile import mkdtemp
 from cs50 import SQL
@@ -6,9 +6,6 @@ from helpers import login_required, hashit
 import os
 from functools import wraps
 
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
 
 app = Flask(__name__)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
@@ -20,14 +17,28 @@ app.config['SECRET_KEY'] = # argh can't show this...I still need to program the 
 
 db = SQL("sqlite:///users.db")
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    return render_template("index.html")
+    if request.method == "GET":
+        return render_template("index.html", name=session["user"]["name"], points=session["user"]["points"])
+    else:
+        pointsUp()
+        return render_template("index.html", name=session["user"]["name"], points=session["user"]["points"])
+
+def pointsUp():
+    pointlist = db.execute("SELECT points FROM users WHERE username = :username;", username=session["user"]["username"])
+    points=pointlist[0]['points']
+    points += 0
+
+    db.execute("UPDATE users SET points = :points WHERE username = :username;", points=points, username=session["user"]["username"])
+    session["user"]["points"] = points
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
+        session.clear()
         return render_template("register.html")
     else:
         name = request.form.get("name")
@@ -48,7 +59,8 @@ def register():
 
         # If registration succeeds, add user to database
         hashpass = hashit(password=request.form.get("password"), key=app.secret_key) # hash
-        db.execute("INSERT INTO users (name, username, password) VALUES (:name, :username, :password)", name=name, username=username, password=hashpass)
+        db.execute("INSERT INTO users (name, username, password, points) VALUES (:name, :username, :password, :points)", name=name, username=username, password=hashpass, points=0)
+
         return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -65,16 +77,15 @@ def login():
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("userid"))
-        print(rows)
 
         # Ensure username exists and password is correct
         enteredPass = hashit(password=request.form.get('password'), key=app.secret_key) # hash
-        print(enteredPass == rows[0]['password'])
+
         if len(rows) != 1 or rows[0]['password'] != enteredPass:
             return render_template("apology.html", message="invalid username and/or password.")
 
         # Remember which user has logged in
-        session["user_id"] = rows[0]["username"]
+        session["user"] = rows[0]
 
         # Redirect user to home page
         return redirect("/")
