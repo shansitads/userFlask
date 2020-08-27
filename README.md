@@ -10,6 +10,7 @@ CREATE TABLE 'users' (
 'username' VARCHAR(255) PRIMARY KEY,
 'name' VARCHAR(255),
 'email' VARCHAR(255),
-'password' INTEGER
+'password' INTEGER,
+'points' INTEGER
 );
 ```
