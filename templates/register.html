@@ -1,12 +1,31 @@
+{% extends "layout.html" %}
+
+
 {% block body %}
         <h1>Register</h1>
 
         <form action="/register" method="post">
-            <input type="text" name="name" id="name" placeholder="Name" class="textIn"> <br>
-            <input type="text" name="username" id="username" placeholder="Username" class="textIn"> <br>
-            <input type="text" name="password" id="password" placeholder="Password" class="textIn"> <br>
-            <input type="text" name="repassword" id="repassword" placeholder="Re-enter Password" class="textIn"> <br>
+            <input type="text" name="name" id="name" placeholder="Name" class="textIn" autocomplete="off"> <br>
+            <input type="text" name="username" id="username" placeholder="Username" class="textIn" autocomplete="off"> <br>
+            <input type="password" name="password" id="password" placeholder="Password" class="textIn" autocomplete="off"> <br>
+            <input type="password" name="repassword" id="repassword" placeholder="Re-enter Password" class="textIn" autocomplete="off"> <br>
+            <input type="checkbox" onclick="myFunction()">Show Password
             <input id="submit" type="submit">
+
+            <script>
+              function myFunction() {
+                var x = document.getElementById("password");
+                var y = document.getElementById("repassword");
+                if (x.type === "password") {
+                  x.type = "text";
+                  y.type = "text";
+                } else {
+                  x.type = "password";
+                  y.type = "password";
+                }
+              }
+            </script>
+
         </form>
 <!--
         <script>
